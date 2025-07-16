@@ -1,0 +1,77 @@
+/* Footer.css */
+
+.footer {
+  background: linear-gradient(135deg, #fff8f3 0%, #ffe3dc 100%);
+  padding: 2rem 1rem 1rem;
+  color: #333;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e0d0c8;
+}
+
+.footer-section h3,
+.footer-section h4 {
+  margin-bottom: 0.6rem;
+  color: #ff7e5f;
+  font-size: 1.2rem;
+}
+
+.footer-section p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-section ul li {
+  margin: 0.4rem 0;
+}
+
+.footer-section ul li a {
+  text-decoration: none;
+  color: #555;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+  color: #ff7e5f;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.social-link {
+  text-decoration: none;
+  color: #555;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+
+.social-link:hover {
+  color: #ff7e5f;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #888;
+}
