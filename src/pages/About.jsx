@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaUtensils, FaLeaf, FaSearch, FaHeart, FaUserFriends } from 'react-icons/fa';
+import { FaLeaf, FaSearch, FaHeart, FaUserFriends } from 'react-icons/fa';
 import Footer from '../components/Footer';
 import '../styles/About.css';
 
