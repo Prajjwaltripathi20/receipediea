@@ -76,8 +76,10 @@ const About = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1>About Resciepe</h1>
-            <p className="hero-subtitle">Discover the story behind your favorite recipe platform</p>
+            <h1 style={{ color: '#232526' }}>About Recipedia</h1>
+            {/* Remove or add more gap below the hero title for a modern look */}
+            <div style={{ marginBottom: '2.2rem' }}></div>
+            {/* <p className="hero-subtitle">Discover the story behind your favorite recipe platform</p> */}
           </motion.div>
         </section>
 
@@ -166,10 +168,9 @@ const About = () => {
         </section>
 
         {/* Team Section */}
-        <section className="about-team">
+        {/* <section className="about-team">
           <h2>Meet Our Team</h2>
           <p className="team-intro">The passionate individuals behind Resciepe who work tirelessly to bring you the best culinary experience.</p>
-          
           <div className="team-grid">
             {teamMembers.map((member, index) => (
               <motion.div 
@@ -192,7 +193,7 @@ const About = () => {
               </motion.div>
             ))}
           </div>
-        </section>
+        </section> */}
 
         {/* Values Section */}
         <section className="about-values">

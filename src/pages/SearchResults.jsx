@@ -4,6 +4,7 @@ import { FaSearch, FaFilter, FaTimes } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import RecipeCard from '../components/RecipeCard';
 import Footer from '../components/Footer';
+import recipeService from '../services/RecipeService';
 import '../styles/SearchResults.css';
 
 const SearchResults = () => {
@@ -14,6 +15,7 @@ const SearchResults = () => {
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     diet: [],
@@ -21,22 +23,86 @@ const SearchResults = () => {
     cuisine: [],
     maxReadyTime: 60,
   });
+  const [categoryInfo, setCategoryInfo] = useState(null);
 
-  // Fetch recipes based on search query
+  // Fetch recipes based on search query and URL parameters
   useEffect(() => {
     const fetchRecipes = async () => {
       setLoading(true);
-      
-      // Simulate API call with timeout
-      setTimeout(() => {
-        const mockRecipes = generateMockRecipes(searchQuery, filters);
-        setRecipes(mockRecipes);
+      setError(null);
+
+      try {
+        // Get URL parameters for category-based searches
+        const urlParams = new URLSearchParams(location.search);
+        const cuisine = urlParams.get('cuisine');
+        const diet = urlParams.get('diet');
+        const type = urlParams.get('type');
+        const intolerances = urlParams.get('intolerances');
+        const maxReadyTime = urlParams.get('maxReadyTime');
+
+        // Check if this is a category-based search from Categories page
+        if (location.state?.categoryName) {
+          setCategoryInfo({
+            name: location.state.categoryName,
+            description: location.state.categoryDescription
+          });
+        }
+
+        // Build search options
+        const searchOptions = {
+          number: 12,
+          addRecipeInformation: true,
+          fillIngredients: true
+        };
+
+        // Add URL parameters to search options
+        if (cuisine) searchOptions.cuisine = cuisine;
+        if (diet) searchOptions.diet = diet;
+        if (type) searchOptions.type = type;
+        if (intolerances) searchOptions.intolerances = intolerances;
+        if (maxReadyTime) searchOptions.maxReadyTime = parseInt(maxReadyTime);
+
+        // Add current filters to search options
+        if (filters.diet.length > 0) {
+          searchOptions.diet = filters.diet.join(',');
+        }
+        if (filters.cuisine.length > 0) {
+          searchOptions.cuisine = filters.cuisine.join(',');
+        }
+        if (filters.mealType.length > 0) {
+          searchOptions.type = filters.mealType.join(',');
+        }
+        if (filters.maxReadyTime !== 60) {
+          searchOptions.maxReadyTime = filters.maxReadyTime;
+        }
+
+        let data;
+        if (searchQuery) {
+          // Text-based search
+          searchOptions.query = searchQuery;
+          data = await recipeService.complexSearch(searchOptions);
+          setRecipes(data.results || []);
+        } else if (cuisine || diet || type || intolerances || Object.values(filters).some(f => Array.isArray(f) ? f.length > 0 : f !== 60)) {
+          // Category or filter-based search
+          data = await recipeService.complexSearch(searchOptions);
+          setRecipes(data.results || []);
+        } else {
+          // No search criteria, show random recipes
+          data = await recipeService.getRandomRecipes({ number: 12 });
+          setRecipes(data.recipes || []);
+        }
+
+      } catch (err) {
+        console.error('Error fetching recipes:', err);
+        setError(err.message || 'Failed to fetch recipes. Please try again.');
+        setRecipes([]);
+      } finally {
         setLoading(false);
-      }, 1000);
+      }
     };
 
     fetchRecipes();
-  }, [searchQuery, filters]);
+  }, [searchQuery, filters, location.search, location.state]);
 
   // Handle search form submission
   const handleSearch = (e) => {
@@ -77,184 +143,7 @@ const SearchResults = () => {
     });
   };
 
-  // Generate mock recipes based on search query and filters
-  const generateMockRecipes = (query, filters) => {
-    // Base set of mock recipes
-    const allRecipes = [
-      {
-        id: 1,
-        title: 'Creamy Garlic Pasta',
-        image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-        readyInMinutes: 25,
-        servings: 4,
-        diets: ['vegetarian'],
-        cuisines: ['italian'],
-        dishTypes: ['lunch', 'dinner', 'main course'],
-        summary: 'A delicious creamy garlic pasta that comes together in just 25 minutes. Perfect for a quick weeknight dinner.',
-      },
-      {
-        id: 2,
-        title: 'Spicy Chicken Curry',
-        image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-        readyInMinutes: 45,
-        servings: 6,
-        diets: [],
-        cuisines: ['indian'],
-        dishTypes: ['dinner', 'main course'],
-        summary: 'A flavorful and aromatic chicken curry with just the right amount of spice. Serve with rice or naan bread.',
-      },
-      {
-        id: 3,
-        title: 'Avocado Toast with Poached Egg',
-        image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-        readyInMinutes: 15,
-        servings: 1,
-        diets: ['vegetarian'],
-        cuisines: ['american'],
-        dishTypes: ['breakfast', 'brunch'],
-        summary: 'A simple yet nutritious breakfast option featuring creamy avocado and perfectly poached eggs on toasted bread.',
-      },
-      {
-        id: 4,
-        title: 'Beef Tacos with Homemade Salsa',
-        image: 'https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-        readyInMinutes: 35,
-        servings: 4,
-        diets: [],
-        cuisines: ['mexican'],
-        dishTypes: ['dinner', 'main course'],
-        summary: 'Delicious beef tacos with a fresh homemade salsa that brings the perfect balance of flavors.',
-      },
-      {
-        id: 5,
-        title: 'Vegan Buddha Bowl',
-        image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-        readyInMinutes: 30,
-        servings: 2,
-        diets: ['vegan', 'vegetarian', 'gluten free'],
-        cuisines: ['american'],
-        dishTypes: ['lunch', 'dinner', 'main course'],
-        summary: 'A nutritious and colorful vegan buddha bowl packed with vegetables, grains, and plant-based protein.',
-      },
-      {
-        id: 6,
-        title: 'Chocolate Chip Cookies',
-        image: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-        readyInMinutes: 25,
-        servings: 24,
-        diets: ['vegetarian'],
-        cuisines: ['american'],
-        dishTypes: ['dessert', 'snack'],
-        summary: 'Classic chocolate chip cookies with a soft center and crispy edges. Perfect for any occasion.',
-      },
-      {
-        id: 7,
-        title: 'Grilled Salmon with Lemon Butter',
-        image: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-        readyInMinutes: 20,
-        servings: 2,
-        diets: ['gluten free', 'pescatarian'],
-        cuisines: ['american'],
-        dishTypes: ['dinner', 'main course'],
-        summary: 'Perfectly grilled salmon topped with a zesty lemon butter sauce. A healthy and delicious dinner option.',
-      },
-      {
-        id: 8,
-        title: 'Vegetable Stir Fry',
-        image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-        readyInMinutes: 20,
-        servings: 4,
-        diets: ['vegan', 'vegetarian', 'gluten free'],
-        cuisines: ['asian', 'chinese'],
-        dishTypes: ['lunch', 'dinner', 'main course'],
-        summary: 'A quick and healthy vegetable stir fry that can be customized with your favorite vegetables and protein.',
-      },
-      {
-        id: 9,
-        title: 'Homemade Margherita Pizza',
-        image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-        readyInMinutes: 40,
-        servings: 4,
-        diets: ['vegetarian'],
-        cuisines: ['italian'],
-        dishTypes: ['lunch', 'dinner', 'main course'],
-        summary: 'A classic Margherita pizza with a crispy crust, fresh tomatoes, mozzarella, and basil.',
-      },
-      {
-        id: 10,
-        title: 'Chicken Caesar Salad',
-        image: 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-        readyInMinutes: 20,
-        servings: 2,
-        diets: [],
-        cuisines: ['american'],
-        dishTypes: ['lunch', 'salad', 'starter'],
-        summary: 'A refreshing Caesar salad with grilled chicken, crisp romaine lettuce, parmesan cheese, and homemade dressing.',
-      },
-      {
-        id: 11,
-        title: 'Butter Chicken',
-        image: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-        readyInMinutes: 50,
-        servings: 6,
-        diets: [],
-        cuisines: ['indian'],
-        dishTypes: ['dinner', 'main course'],
-        summary: 'Creamy and flavorful butter chicken that will transport you straight to India. Best served with naan and rice.',
-      },
-      {
-        id: 12,
-        title: 'Greek Salad',
-        image: 'https://images.unsplash.com/photo-1551248429-40975aa4de74?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
-        readyInMinutes: 15,
-        servings: 4,
-        diets: ['vegetarian', 'gluten free'],
-        cuisines: ['greek', 'mediterranean'],
-        dishTypes: ['lunch', 'salad', 'starter'],
-        summary: 'A refreshing Greek salad with cucumbers, tomatoes, olives, feta cheese, and a simple olive oil dressing.',
-      },
-    ];
 
-    // Filter recipes based on search query
-    let filteredRecipes = allRecipes;
-    
-    if (query) {
-      const lowerCaseQuery = query.toLowerCase();
-      filteredRecipes = filteredRecipes.filter(recipe => 
-        recipe.title.toLowerCase().includes(lowerCaseQuery) ||
-        recipe.summary.toLowerCase().includes(lowerCaseQuery) ||
-        recipe.cuisines.some(cuisine => cuisine.toLowerCase().includes(lowerCaseQuery)) ||
-        recipe.dishTypes.some(type => type.toLowerCase().includes(lowerCaseQuery))
-      );
-    }
-
-    // Apply filters
-    if (filters.diet.length > 0) {
-      filteredRecipes = filteredRecipes.filter(recipe => 
-        filters.diet.some(diet => recipe.diets.includes(diet))
-      );
-    }
-
-    if (filters.mealType.length > 0) {
-      filteredRecipes = filteredRecipes.filter(recipe => 
-        filters.mealType.some(type => recipe.dishTypes.includes(type))
-      );
-    }
-
-    if (filters.cuisine.length > 0) {
-      filteredRecipes = filteredRecipes.filter(recipe => 
-        filters.cuisine.some(cuisine => recipe.cuisines.includes(cuisine))
-      );
-    }
-
-    if (filters.maxReadyTime) {
-      filteredRecipes = filteredRecipes.filter(recipe => 
-        recipe.readyInMinutes <= filters.maxReadyTime
-      );
-    }
-
-    return filteredRecipes;
-  };
 
   return (
     <div className="search-results-page">

@@ -241,23 +241,10 @@ const Favorites = () => {
             </div>
           ) : (
             <div className="no-favorites">
-              {searchQuery ? (
-                <>
-                  <h2>No matching recipes found</h2>
-                  <p>Try a different search term or clear your search</p>
-                  <button className="clear-search-btn" onClick={clearSearch}>
-                    Clear Search
-                  </button>
-                </>
-              ) : (
-                <>
-                  <h2>You haven't saved any favorites yet</h2>
-                  <p>Start exploring recipes and save your favorites</p>
-                  <Link to="/" className="explore-btn">
-                    Explore Recipes
-                  </Link>
-                </>
-              )}
+              <img src="https://undraw.co/api/illustrations/undraw_cooking_lyxy.svg" alt="No favorites" style={{ maxWidth: '260px', marginBottom: '1.5rem' }} />
+              <h2>No saved recipes yet</h2>
+              <p>Your favorite recipes will appear here. Start exploring and save your favorites!</p>
+              <Link to="/search" className="explore-btn">Explore Recipes</Link>
             </div>
           )}
         </div>

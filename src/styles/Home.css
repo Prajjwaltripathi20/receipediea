@@ -5,8 +5,8 @@
   }
   
   .hero {
-    background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
-    color: white;
+    background: linear-gradient(135deg, #232526, #414345);
+    color: #fff;
     padding: 120px 20px;
     text-align: center;
     position: relative;
@@ -38,6 +38,7 @@
     animation: fadeInDown 1s ease;
     font-weight: 700;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    color: #fff;
   }
   
   .hero-subtitle {
@@ -52,10 +53,10 @@
     max-width: 600px;
     margin: 0 auto 30px;
     animation: fadeIn 1.5s ease;
-    background: white;
+    background: #fff;
     border-radius: 30px;
     overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px rgba(35,37,38,0.08);
     position: relative;
     transition: transform 0.3s ease;
   }
@@ -70,12 +71,13 @@
     border: none;
     font-size: 1rem;
     outline: none;
+    color: #232526;
   }
   
   .search-button {
     padding: 15px 30px;
-    background: #ff4757;
-    color: white;
+    background: #232526;
+    color: #fff;
     border: none;
     font-size: 1rem;
     cursor: pointer;
@@ -83,10 +85,11 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    font-weight: 600;
   }
   
   .search-button:hover {
-    background: #ff6b81;
+    background: #414345;
   }
   
   .quick-filters {
@@ -114,10 +117,22 @@
     transform: translateY(-2px);
   }
   
+  .quick-filters .filter-btn {
+    background: #fff;
+    color: #232526;
+    border: 1px solid #232526;
+    font-weight: 500;
+  }
+
+  .quick-filters .filter-btn:hover {
+    background: #232526;
+    color: #fff;
+  }
+  
   .section-title {
     text-align: center;
     margin-bottom: 40px;
-    color: #2c3e50;
+    color: #232526;
     font-size: 2.5rem;
     font-weight: 700;
     position: relative;
@@ -131,12 +146,12 @@
     transform: translateX(-50%);
     width: 50px;
     height: 3px;
-    background: #ff4757;
+    background: #ff7e5f;
   }
   
   .featured-recipes {
     padding: 80px 20px;
-    background-color: #f9f9f9;
+    background-color: #f5f6fa;
   }
   
   .recipe-grid {
@@ -145,11 +160,12 @@
     gap: 30px;
     max-width: 1200px;
     margin: 0 auto;
+    background: none;
   }
   
   .trending-now {
     padding: 80px 20px;
-    background-color: white;
+    background-color: #fff;
   }
   
   .trending-grid {
@@ -166,7 +182,8 @@
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
-    background: white;
+    background: #f5f6fa;
+    border: 1px solid #e0e0e0;
   }
   
   .trending-card:hover {
@@ -192,14 +209,14 @@
   
   .trending-content h3 {
     margin: 0 0 10px;
-    color: #2c3e50;
+    color: #232526;
     font-size: 1.2rem;
   }
   
   .trending-meta {
     display: flex;
     justify-content: space-between;
-    color: #7f8c8d;
+    color: #414345;
     font-size: 0.9rem;
   }
   
@@ -218,7 +235,7 @@
   
   .categories {
     padding: 80px 20px;
-    background-color: #f9f9f9;
+    background-color: #f5f6fa;
   }
   
   .category-grid {
@@ -483,3 +500,21 @@
     color: #7f8c8d;
     font-size: 0.9rem;
   } 
+
+/* No more recipes message */
+.no-more-recipes {
+  text-align: center;
+  margin: 2.5rem 0 1.5rem 0;
+  color: #232526;
+  font-size: 1.2rem;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.no-more-recipes img {
+  max-width: 180px;
+  opacity: 0.8;
+} 

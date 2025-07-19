@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaFacebookF, FaTwitter, FaInstagram } from 'react-icons/fa';
 import '../styles/Footer.css';
 
 const Footer = () => {
@@ -6,7 +7,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-content">
         <div className="footer-section">
-          <h3>Recipe Finder</h3>
+          <h3>Recipedia</h3>
           <p>Your go-to destination for discovering delicious recipes</p>
         </div>
         <div className="footer-section">
@@ -21,14 +22,14 @@ const Footer = () => {
         <div className="footer-section">
           <h4>Connect With Us</h4>
           <div className="social-links">
-            <a href="#" className="social-link">Facebook</a>
-            <a href="#" className="social-link">Twitter</a>
-            <a href="#" className="social-link">Instagram</a>
+            <a href="#" className="social-link" aria-label="Facebook"><FaFacebookF /></a>
+            <a href="#" className="social-link" aria-label="Twitter"><FaTwitter /></a>
+            <a href="#" className="social-link" aria-label="Instagram"><FaInstagram /></a>
           </div>
         </div>
       </div>
       <div className="footer-bottom">
-        <p>&copy; {new Date().getFullYear()} Recipe Finder. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} Recipedia. All rights reserved.</p>
       </div>
     </footer>
   );

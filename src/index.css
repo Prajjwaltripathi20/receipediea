@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=Poppins:wght@400;500;700&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -9,6 +11,22 @@ body {
   background: #f6f7fb;
   color: #22223b;
   min-height: 100vh;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Lora', serif;
+  color: #007f4e;
+  font-weight: 700;
+}
+
+a {
+  color: #1bb267;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+a:hover {
+  color: #007f4e;
 }
 
 #root {

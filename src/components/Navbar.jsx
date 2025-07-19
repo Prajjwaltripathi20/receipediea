@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaSearch, FaHeart, FaUtensils, FaBars, FaTimes, FaHome, FaList, FaInfoCircle, FaEnvelope, FaUser, FaSignOutAlt } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';
+import AuthModal from './AuthModal';
 import '../styles/Navbar.css';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [profileDropdown, setProfileDropdown] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { currentUser, loading, signOut } = useAuth();
@@ -15,7 +18,6 @@ const Navbar = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -24,17 +26,16 @@ const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // Handle logout
   const handleLogout = async () => {
     try {
       await signOut();
+      setProfileDropdown(false);
       navigate('/');
     } catch (error) {
       console.error('Failed to log out', error);
     }
   };
 
-  // Public links available to all users
   const publicLinks = [
     { path: '/', label: 'Home', icon: <FaHome /> },
     { path: '/search', label: 'Search', icon: <FaSearch /> },
@@ -42,25 +43,9 @@ const Navbar = () => {
     { path: '/about', label: 'About', icon: <FaInfoCircle /> },
     { path: '/contact', label: 'Contact', icon: <FaEnvelope /> }
   ];
-  
-  // Links that require authentication
   const authLinks = [
-    { path: '/favorites', label: 'Favorites', icon: <FaHeart /> }
+    { path: '/favorites', label: 'Saved', icon: <FaHeart /> }
   ];
-  
-  // Authentication links (login/register or profile/logout)
-  const authenticationLinks = currentUser
-    ? [
-        { path: '/profile', label: currentUser.displayName || 'Profile', icon: <FaUser />, onClick: () => navigate('/profile') },
-        { path: '#', label: 'Logout', icon: <FaSignOutAlt />, onClick: handleLogout }
-      ]
-    : [
-        { path: '/login', label: 'Login', icon: <FaUser /> },
-        { path: '/register', label: 'Register', icon: <FaUser /> }
-      ];
-  
-  // Combine all links
-  const navLinks = [...publicLinks, ...(currentUser ? authLinks : []), ...authenticationLinks];
 
   return (
     <nav className={`navbar ${isScrolled ? 'navbar-scrolled' : ''}`}>
@@ -69,39 +54,46 @@ const Navbar = () => {
           <FaUtensils className="logo-icon" />
           <span className="logo-text">Recipedia</span>
         </Link>
-
         <div className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
-          {navLinks.map((link) => (
-            link.onClick ? (
-              <div
-                key={link.path}
-                className={`nav-item ${location.pathname === link.path ? 'active' : ''}`}
-                onClick={() => {
-                  link.onClick();
-                  setIsMenuOpen(false);
-                }}
-              >
-                <span className="nav-icon">{link.icon}</span>
-                <span className="nav-text">{link.label}</span>
-              </div>
-            ) : (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`nav-item ${location.pathname === link.path ? 'active' : ''}`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <span className="nav-icon">{link.icon}</span>
-                <span className="nav-text">{link.label}</span>
-              </Link>
-            )
+          {[...publicLinks, ...(currentUser ? authLinks : [])].map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className={`nav-item ${location.pathname === link.path ? 'active' : ''}`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <span className="nav-icon">{link.icon}</span>
+              <span className="nav-text">{link.label}</span>
+            </Link>
           ))}
+          {!currentUser && (
+            <button className="nav-auth-btn" onClick={() => setShowAuthModal(true)}>
+              <FaUser style={{ marginRight: 6 }} /> Sign In
+            </button>
+          )}
+          {currentUser && (
+            <div className="nav-profile-wrapper">
+              <button className="nav-profile-btn" onClick={() => setProfileDropdown((d) => !d)}>
+                <span className="nav-profile-avatar">
+                  {currentUser.displayName ? currentUser.displayName[0].toUpperCase() : <FaUser />}
+                </span>
+                <span className="nav-profile-name">{currentUser.displayName || 'Profile'}</span>
+              </button>
+              {profileDropdown && (
+                <div className="nav-profile-dropdown">
+                  <button className="nav-profile-dropdown-item" onClick={handleLogout}>
+                    <FaSignOutAlt style={{ marginRight: 8 }} /> Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
-
         <div className="mobile-menu-icon" onClick={toggleMenu}>
           {isMenuOpen ? <FaTimes /> : <FaBars />}
         </div>
       </div>
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} initialMode="login" />
     </nav>
   );
 };

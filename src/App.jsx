@@ -9,8 +9,7 @@ import Favorites from './pages/Favorites';
 import SearchResults from './pages/SearchResults';
 import RecipeDetails from './pages/RecipeDetails';
 import IngredientSearch from './pages/IngredientSearch';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import NotFound from './pages/NotFound';
 import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './contexts/AuthContext';
 // import './App.css';
@@ -29,13 +28,12 @@ function App() {
             <Route path="/search" element={<SearchResults />} />
             <Route path="/recipe/:id" element={<RecipeDetails />} />
             <Route path="/ingredients" element={<IngredientSearch />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
             <Route path="/favorites" element={
               <PrivateRoute>
                 <Favorites />
               </PrivateRoute>
             } />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
       </Router>

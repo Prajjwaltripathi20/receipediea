@@ -175,8 +175,10 @@ const Home = () => {
     <div className="home">
       <header className="hero">
         <div className="hero-content">
-          <h1 className="hero-title">Discover Amazing Recipes</h1>
-          <p className="hero-subtitle">Find and share your favorite recipes with the world</p>
+          <h1 className="hero-title" style={{ color: '#fff' }}>Discover Amazing Recipes</h1>
+          {/* Remove or add gap above the subtitle */}
+          {/* <p className="hero-subtitle">Find and share your favorite recipes with the world</p> */}
+          <div style={{ marginBottom: '2.5rem' }}></div>
           <form onSubmit={handleSearchSubmit} className="search-container">
             <input
               type="text"
@@ -227,11 +229,17 @@ const Home = () => {
               <i className="fas fa-spinner fa-spin"></i>
             </div>
           ) : (
-            <div className="recipe-grid">
-              {featuredRecipes.map(recipe => (
-                <RecipeCard key={recipe.id} recipe={recipe} />
-              ))}
-            </div>
+            <>
+              <div className="recipe-grid">
+                {featuredRecipes.map(recipe => (
+                  <RecipeCard key={recipe.id} recipe={recipe} />
+                ))}
+              </div>
+              <div className="no-more-recipes">
+                <img src="https://undraw.co/api/illustrations/undraw_breakfast_psiw.svg" alt="No more recipes" />
+                <span>No more recipes to show!</span>
+              </div>
+            </>
           )}
         </div>
       </section>

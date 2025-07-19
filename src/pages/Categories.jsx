@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FaUtensils, FaSearch } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import Footer from '../components/Footer';
 import '../styles/Categories.css';
 
 const Categories = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [showAllCategories, setShowAllCategories] = useState(true);
@@ -189,6 +190,40 @@ const Categories = () => {
     setSearchQuery('');
   };
 
+  // Handle category click - navigate to search results with category filter
+  const handleCategoryClick = (category) => {
+    // Map category types to search parameters
+    const searchParams = new URLSearchParams();
+    
+    if (category.type === 'cuisine') {
+      searchParams.set('cuisine', category.name.toLowerCase());
+    } else if (category.type === 'meal') {
+      searchParams.set('type', category.name.toLowerCase());
+    } else if (category.type === 'diet') {
+      if (category.name === 'Vegetarian') {
+        searchParams.set('diet', 'vegetarian');
+      } else if (category.name === 'Vegan') {
+        searchParams.set('diet', 'vegan');
+      } else if (category.name === 'Gluten Free') {
+        searchParams.set('intolerances', 'gluten');
+      } else if (category.name === 'Keto') {
+        searchParams.set('diet', 'ketogenic');
+      }
+    } else if (category.type === 'time') {
+      if (category.name === 'Quick & Easy') {
+        searchParams.set('maxReadyTime', '30');
+      }
+    }
+    
+    // Navigate to search results with category filter
+    navigate(`/search?${searchParams.toString()}`, {
+      state: { 
+        categoryName: category.name,
+        categoryDescription: category.description 
+      }
+    });
+  };
+
   // Get categories to display based on search/filter state
   const displayCategories = showAllCategories ? categories : filteredCategories;
 
@@ -239,8 +274,9 @@ const Categories = () => {
                   className="category-card"
                   whileHover={{ scale: 1.03 }}
                   transition={{ duration: 0.2 }}
+                  onClick={() => handleCategoryClick(category)}
                 >
-                  <Link to={`/category/${category.id}`} className="category-link">
+                  <div className="category-link">
                     <div className="category-image-container">
                       <img src={category.image} alt={category.name} className="category-image" />
                       <div className="category-overlay">
@@ -251,7 +287,7 @@ const Categories = () => {
                       <h3 className="category-title">{category.name}</h3>
                       <p className="category-description">{category.description}</p>
                     </div>
-                  </Link>
+                  </div>
                 </motion.div>
               ))}
             </div>
