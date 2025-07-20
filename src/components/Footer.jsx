@@ -22,9 +22,9 @@ const Footer = () => {
         <div className="footer-section">
           <h4>Connect With Us</h4>
           <div className="social-links">
-            <a href="#" className="social-link" aria-label="Facebook"><FaFacebookF /></a>
-            <a href="#" className="social-link" aria-label="Twitter"><FaTwitter /></a>
-            <a href="#" className="social-link" aria-label="Instagram"><FaInstagram /></a>
+            <button className="social-link" aria-label="Facebook" onClick={() => window.open('https://facebook.com', '_blank')}><FaFacebookF /></button>
+            <button className="social-link" aria-label="Twitter" onClick={() => window.open('https://twitter.com', '_blank')}><FaTwitter /></button>
+            <button className="social-link" aria-label="Instagram" onClick={() => window.open('https://instagram.com', '_blank')}><FaInstagram /></button>
           </div>
         </div>
       </div>
