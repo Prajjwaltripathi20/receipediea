@@ -393,7 +393,7 @@
 
 .recipe-image-container {
   position: relative;
-  padding-top: 65%; /* Aspect ratio 16:10 */
+  padding-top: 10%; /* Aspect ratio 16:10 */
   overflow: hidden;
 }
 

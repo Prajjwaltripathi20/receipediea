@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FaSearch, FaFire, FaLeaf, FaSeedling, FaBreadSlice } from 'react-icons/fa';
 import RecipeCard from '../components/RecipeCard';
 import Footer from '../components/Footer';
 import '../styles/Home.css';
+import { PiGenderTransgenderFill } from 'react-icons/pi';
 
 const Home = () => {
   const [featuredRecipes, setFeaturedRecipes] = useState([]);
@@ -23,7 +24,7 @@ const Home = () => {
         const mockFeaturedRecipes = [
           {
             id: 1,
-            title: 'Butter Chicken',
+            title: 'Mix Veg Curry',
             image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
             readyInMinutes: 45,
             servings: 4,
@@ -33,7 +34,7 @@ const Home = () => {
           },
           {
             id: 2,
-            title: 'Paneer Tikka Masala',
+            title: 'Samosa',
             image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
             readyInMinutes: 35,
             servings: 3,
@@ -43,7 +44,7 @@ const Home = () => {
           },
           {
             id: 3,
-            title: 'Gulab Jamun',
+            title: 'Cold Coffee',
             image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
             readyInMinutes: 30,
             servings: 6,
@@ -107,7 +108,7 @@ const Home = () => {
 
     try {
       const response = await fetch(
-        `https://api.spoonacular.com/recipes/autocomplete?query=${query}&number=5&apiKey=YOUR_API_KEY`
+        `https://api.spoonacular.com`
       );
       const data = await response.json();
       setSuggestions(data);
@@ -124,6 +125,10 @@ const Home = () => {
       setSuggestions(mockSuggestions);
     }
   };
+  const trendRef = useRef(null);
+  const scrollToTrend = () => {
+    trendRef.current.scrollIntoView({ behavior: 'smooth' });
+  }
 
   const handleSearchChange = (e) => {
     const query = e.target.value;
@@ -153,21 +158,21 @@ const Home = () => {
       quote: "Recipedia has transformed my cooking journey! The detailed recipes and step-by-step instructions make it so easy to create restaurant-quality dishes at home.",
       author: "Aryan Bhargava",
       role: "Food Blogger & Chef",
-      image: "https://media.licdn.com/dms/image/v2/D5603AQFIfef4GlGi-A/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1725464044698?e=1752105600&v=beta&t=wlGabV8jY9BaQ-gVD9EV4BeFJDYOwQi8v9gKLOpzoFU"
+      image: "https://media.licdn.com/dms/image/v2/D5603AQFIfef4GlGi-A/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1725464044705?e=1755734400&v=beta&t=4AxkWbG1UBTwnGdNop4dZfzGBy9GaQmtn4OL5fc0w4U"
     },
     {
       id: 2,
       quote: "As a working professional, I love how Recipedia helps me plan my meals. The quick and healthy recipes have made my life so much easier!",
       author: "Sanath Waraikar",
       role: "Software Engineer",
-      image: "https://media.licdn.com/dms/image/v2/D4D03AQEUbvbX8FxPRg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1726609555300?e=1752105600&v=beta&t=1EfinOZ9LinyvNdm-xjfZx8w4TFWJLtrZzZkSmpGLm8"
+      image: "https://media.licdn.com/dms/image/v2/D4D35AQExqLl4LNdd5Q/profile-framedphoto-shrink_800_800/B4DZdek2AAGYAg-/0/1749638406515?e=1753596000&v=beta&t=_zuJ0DC_fBEdd_QMfyQZy9RPvz6y499FfOFOEkaJRpk"
     },
     {
       id: 3,
       quote: "The variety of Indian and international recipes on Recipedia is amazing. I've learned so many new cooking techniques and my family loves the results!",
-      author: "Mukund Mangla",
+      author: "Vedant Satbhai",
       role: "Home Chef",
-      image: "https://media.licdn.com/dms/image/v2/D4E03AQFlhrTSVFbBbQ/profile-displayphoto-shrink_400_400/B4EZUU2ybPG0Ag-/0/1739811662052?e=1752105600&v=beta&t=nL3fyHjvl0dQAhefH8wdOgGEGk_2cyctLvYaA3l2SXw"
+      image: "https://media.licdn.com/dms/image/v2/D5603AQGCZArH_StnqQ/profile-displayphoto-shrink_800_800/B56ZUUzihvGsAc-/0/1739810810752?e=1755734400&v=beta&t=XPMaO7x1j8k15D92suqFGExLQ9NHz3Q91bxdmhcds1E"
     }
   ];
 
@@ -205,7 +210,7 @@ const Home = () => {
             </div>
           )}
           <div className="quick-filters">
-            <button className="filter-btn">
+            <button className="filter-btn" onClick={scrollToTrend}>
               <FaFire /> Trending
             </button>
             <button className="filter-btn">
@@ -235,16 +240,16 @@ const Home = () => {
                   <RecipeCard key={recipe.id} recipe={recipe} />
                 ))}
               </div>
-              <div className="no-more-recipes">
+              {/* <div className="no-more-recipes">
                 <img src="https://undraw.co/api/illustrations/undraw_breakfast_psiw.svg" alt="No more recipes" />
                 <span>No more recipes to show!</span>
-              </div>
+              </div> */}
             </>
           )}
         </div>
       </section>
 
-      <section className="trending-now">
+      <section className="trending-now" ref={trendRef}>
         <div className="container">
           <h2 className="section-title">Trending Now</h2>
           <div className="trending-grid">

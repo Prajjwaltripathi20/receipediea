@@ -16,7 +16,7 @@ const RecipeDetails = () => {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('ingredients');
   const [isRecipeFavorite, setIsRecipeFavorite] = useState(false);
-  const [similarRecipes, setSimilarRecipes] = useState([]);
+  // const [similarRecipes, setSimilarRecipes] = useState([]);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {

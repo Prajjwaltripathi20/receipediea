@@ -4,10 +4,11 @@ import { FaHeart, FaSearch } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';
 import RecipeCard from '../components/RecipeCard';
 import Footer from '../components/Footer';
+import recipeService from '../services/RecipeService';
 import '../styles/Favorites.css';
 
 const Favorites = () => {
-  const { currentUser, getFavorites } = useAuth();
+  const { favorites } = useAuth();
   const [favoriteRecipes, setFavoriteRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -17,41 +18,72 @@ const Favorites = () => {
     const fetchFavoriteRecipes = async () => {
       setLoading(true);
       try {
-        // Get favorite recipe IDs from localStorage
-        const favoriteIds = getFavorites();
-        
-        if (favoriteIds.length === 0) {
+        console.log('DEBUG: Favorites from context:', favorites);
+        console.log('DEBUG: Favorites length:', favorites.length);
+        if (favorites.length === 0) {
+          console.log('DEBUG: No favorites found, setting empty arrays');
           setFavoriteRecipes([]);
           setFilteredRecipes([]);
-          setLoading(false);
-          return;
-        }
+        } else {
+          // Fetch actual recipe details from API
+          const recipePromises = favorites.map(async (recipeId) => {
+            try {
+              // Try to fetch from API first
+              const recipeDetails = await recipeService.getRecipeDetails(recipeId);
+              return recipeDetails;
+            } catch (error) {
+              console.warn(`Failed to fetch recipe ${recipeId} from API, using mock data:`, error);
+              // Fallback to mock data if API fails
+              const mockRecipes = generateMockRecipes([recipeId]);
+              return mockRecipes[0] || null;
+            }
+          });
 
-        // In a real app, you would fetch recipe details from an API
-        // const promises = favoriteIds.map(id => 
-        //   fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=YOUR_API_KEY`)
-        //     .then(res => res.json())
-        // );
-        // const recipes = await Promise.all(promises);
-        
-        // Mock data for demonstration
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Generate mock recipes based on IDs
-        const mockRecipes = generateMockRecipes(favoriteIds);
-        setFavoriteRecipes(mockRecipes);
-        setFilteredRecipes(mockRecipes);
+          const recipeResults = await Promise.all(recipePromises);
+          const validRecipes = recipeResults.filter(recipe => recipe !== null);
+          
+          console.log('DEBUG: Fetched recipes:', validRecipes);
+          console.log('DEBUG: Valid recipes length:', validRecipes.length);
+          setFavoriteRecipes(validRecipes);
+          setFilteredRecipes(validRecipes);
+        }
       } catch (error) {
         console.error('Error fetching favorite recipes:', error);
+        // Fallback to mock data on error
+        const mockRecipes = generateMockRecipes(favorites);
+        setFavoriteRecipes(mockRecipes);
+        setFilteredRecipes(mockRecipes);
       } finally {
         setLoading(false);
       }
     };
-
     fetchFavoriteRecipes();
-  }, [getFavorites]);
+  }, [favorites]);
 
-  // Generate mock recipes based on IDs
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setFilteredRecipes(favoriteRecipes);
+    } else {
+      const filtered = favoriteRecipes.filter(recipe =>
+        recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredRecipes(filtered);
+    }
+  }, [favoriteRecipes, searchQuery]);
+
+  useEffect(() => {
+    setSearchQuery('');
+  }, [favorites]);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setFilteredRecipes(favoriteRecipes);
+  };
+
   const generateMockRecipes = (ids) => {
     const allMockRecipes = [
       {
@@ -176,29 +208,13 @@ const Favorites = () => {
       }
     ];
 
-    // Filter recipes based on IDs
-    return allMockRecipes.filter(recipe => ids.includes(recipe.id));
-  };
-
-  // Handle search input change
-  const handleSearchChange = (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(query);
-    
-    if (query.trim() === '') {
-      setFilteredRecipes(favoriteRecipes);
-    } else {
-      const filtered = favoriteRecipes.filter(recipe => 
-        recipe.title.toLowerCase().includes(query)
-      );
-      setFilteredRecipes(filtered);
-    }
-  };
-
-  // Clear search
-  const clearSearch = () => {
-    setSearchQuery('');
-    setFilteredRecipes(favoriteRecipes);
+    return allMockRecipes.filter(recipe => {
+      const recipeId = recipe.id;
+      return ids.some(id => {
+        // Handle both string and number comparisons
+        return String(id) === String(recipeId) || Number(id) === Number(recipeId);
+      });
+    });
   };
 
   return (
@@ -236,12 +252,16 @@ const Favorites = () => {
           ) : filteredRecipes.length > 0 ? (
             <div className="favorites-grid">
               {filteredRecipes.map(recipe => (
-                <RecipeCard key={recipe.id} {...recipe} />
+                <RecipeCard key={recipe.id} recipe={recipe} />
               ))}
             </div>
           ) : (
             <div className="no-favorites">
-              <img src="https://undraw.co/api/illustrations/undraw_cooking_lyxy.svg" alt="No favorites" style={{ maxWidth: '260px', marginBottom: '1.5rem' }} />
+              <img
+                src="https://undraw.co/api/illustrations/undraw_cooking_lyxy.svg"
+                alt="No favorites"
+                style={{ maxWidth: '260px', marginBottom: '1.5rem' }}
+              />
               <h2>No saved recipes yet</h2>
               <p>Your favorite recipes will appear here. Start exploring and save your favorites!</p>
               <Link to="/search" className="explore-btn">Explore Recipes</Link>

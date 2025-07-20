@@ -35,6 +35,70 @@ const debounce = (func, wait) => {
   };
 };
 
+// Mock recipes for demo/static deployments
+const MOCK_RECIPES = [
+  {
+    id: 1,
+    title: 'Butter Chicken',
+    image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
+    readyInMinutes: 45,
+    servings: 4,
+    vegetarian: false,
+    vegan: false,
+    glutenFree: true
+  },
+  {
+    id: 2,
+    title: 'Paneer Tikka Masala',
+    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
+    readyInMinutes: 35,
+    servings: 3,
+    vegetarian: true,
+    vegan: false,
+    glutenFree: true
+  },
+  {
+    id: 3,
+    title: 'Gulab Jamun',
+    image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
+    readyInMinutes: 30,
+    servings: 6,
+    vegetarian: true,
+    vegan: false,
+    glutenFree: false
+  },
+  {
+    id: 4,
+    title: 'Masala Dosa',
+    image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
+    readyInMinutes: 25,
+    servings: 2,
+    vegetarian: true,
+    vegan: true,
+    glutenFree: true
+  },
+  {
+    id: 5,
+    title: 'Biryani',
+    image: 'https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
+    readyInMinutes: 60,
+    servings: 4,
+    vegetarian: false,
+    vegan: false,
+    glutenFree: true
+  },
+  {
+    id: 6,
+    title: 'Samosa',
+    image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
+    readyInMinutes: 40,
+    servings: 6,
+    vegetarian: true,
+    vegan: false,
+    glutenFree: false
+  }
+];
+
 class RecipeService {
   constructor() {
     this.baseURL = process.env.REACT_APP_API_BASE_URL || 'https://api.spoonacular.com';
@@ -160,6 +224,16 @@ class RecipeService {
 
   // Complex search with multiple filters
   async complexSearch(options = {}) {
+    // Fallback to mock data if no API key is present
+    if (!this.apiKey) {
+      // Filter mock recipes by query if present
+      let results = MOCK_RECIPES;
+      if (options.query) {
+        const q = options.query.toLowerCase();
+        results = MOCK_RECIPES.filter(r => r.title.toLowerCase().includes(q));
+      }
+      return { results };
+    }
     const cacheKey = `complex_${JSON.stringify(options)}`;
     const cached = this.getCachedData(cacheKey);
     if (cached) return cached;
@@ -204,6 +278,10 @@ class RecipeService {
 
   // Get random recipes
   async getRandomRecipes(options = {}) {
+    // Fallback to mock data if no API key is present
+    if (!this.apiKey) {
+      return { recipes: MOCK_RECIPES };
+    }
     try {
       const params = {
         number: options.number || 6,
