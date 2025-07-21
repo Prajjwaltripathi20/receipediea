@@ -190,6 +190,34 @@
   color: #5a7a1f;
 }
 
+/* Clerk Auth Styles */
+.clerk-auth-container {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.clerk-auth-form {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.clerk-auth-card {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+/* Clerk Avatar in Navbar */
+.clerk-avatar {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
 /* Mobile Responsive */
 @media (max-width: 480px) {
   .auth-modal {

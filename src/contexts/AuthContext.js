@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useUser, useAuth as useClerkAuth } from '@clerk/clerk-react';
 
 const AuthContext = createContext();
 
@@ -7,23 +8,30 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
+  const { user, isLoaded: clerkLoaded } = useUser();
+  const { isSignedIn } = useClerkAuth();
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState([]);
 
+  // Update currentUser when Clerk user changes
   useEffect(() => {
-    // Check for existing user session in localStorage
-    const savedUser = localStorage.getItem('currentUser');
-    if (savedUser) {
-      try {
-        setCurrentUser(JSON.parse(savedUser));
-      } catch (error) {
-        console.error('Error parsing saved user:', error);
-        localStorage.removeItem('currentUser');
+    if (clerkLoaded) {
+      if (isSignedIn && user) {
+        // Map Clerk user to our app's user format
+        const userSession = {
+          uid: user.id,
+          email: user.primaryEmailAddress?.emailAddress,
+          displayName: user.fullName || user.firstName || user.username,
+          isAuthenticated: true
+        };
+        setCurrentUser(userSession);
+      } else {
+        setCurrentUser(null);
       }
+      setLoading(false);
     }
-    setLoading(false);
-  }, []);
+  }, [user, isSignedIn, clerkLoaded]);
 
   // Load favorites from localStorage when user changes
   useEffect(() => {
@@ -36,55 +44,22 @@ export function AuthProvider({ children }) {
     }
   }, [currentUser]);
 
-  // Simulated authentication functions
-  const login = async (email, password) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
-    const user = storedUsers.find(u => u.email === email && u.password === password);
-    if (!user) {
-      throw new Error('Invalid email or password');
-    }
-    const userSession = {
-      uid: user.id,
-      email: user.email,
-      displayName: user.displayName,
-      isAuthenticated: true
-    };
-    setCurrentUser(userSession);
-    localStorage.setItem('currentUser', JSON.stringify(userSession));
-    return userSession;
+  // These functions are no longer needed as Clerk handles authentication
+  // But we keep them as no-ops for compatibility
+  const login = async () => {
+    console.warn('Using Clerk for authentication - login() is deprecated');
+    return null;
   };
 
-  const register = async (email, password, displayName) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
-    if (storedUsers.find(u => u.email === email)) {
-      throw new Error('User already exists with this email');
-    }
-    const newUser = {
-      id: Date.now().toString(),
-      email,
-      password,
-      displayName,
-      createdAt: new Date().toISOString()
-    };
-    storedUsers.push(newUser);
-    localStorage.setItem('users', JSON.stringify(storedUsers));
-    const userSession = {
-      uid: newUser.id,
-      email: newUser.email,
-      displayName: newUser.displayName,
-      isAuthenticated: true
-    };
-    setCurrentUser(userSession);
-    localStorage.setItem('currentUser', JSON.stringify(userSession));
-    return userSession;
+  const register = async () => {
+    console.warn('Using Clerk for authentication - register() is deprecated');
+    return null;
   };
 
   const signOut = async () => {
-    setCurrentUser(null);
+    // Clerk handles the actual sign out
+    // We just clear our local state
     setFavorites([]);
-    localStorage.removeItem('currentUser');
   };
 
   // Store user's favorite recipes in localStorage and state
@@ -93,10 +68,10 @@ export function AuthProvider({ children }) {
     const userId = currentUser.uid;
     console.log('DEBUG: Adding to favorites - recipeId:', recipeId, 'type:', typeof recipeId);
     console.log('DEBUG: Current favorites before adding:', favorites);
-    
+
     // Ensure consistent ID format (convert to number if possible, otherwise keep as string)
     const normalizedId = typeof recipeId === 'string' && !isNaN(recipeId) ? parseInt(recipeId) : recipeId;
-    
+
     if (!favorites.some(id => String(id) === String(normalizedId))) {
       const newFavorites = [...favorites, normalizedId];
       setFavorites(newFavorites);
