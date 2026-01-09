@@ -156,12 +156,12 @@ const Categories = () => {
   const handleSearchChange = (e) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
-    
+
     if (query.trim() === '') {
       setFilteredCategories([]);
       setShowAllCategories(true);
     } else {
-      const filtered = categories.filter(category => 
+      const filtered = categories.filter(category =>
         category.name.toLowerCase().includes(query) ||
         category.description.toLowerCase().includes(query)
       );
@@ -192,36 +192,33 @@ const Categories = () => {
 
   // Handle category click - navigate to search results with category filter
   const handleCategoryClick = (category) => {
-    // Map category types to search parameters
-    const searchParams = new URLSearchParams();
-    
     if (category.type === 'cuisine') {
-      searchParams.set('cuisine', category.name.toLowerCase());
-    } else if (category.type === 'meal') {
-      searchParams.set('type', category.name.toLowerCase());
-    } else if (category.type === 'diet') {
-      if (category.name === 'Vegetarian') {
-        searchParams.set('diet', 'vegetarian');
-      } else if (category.name === 'Vegan') {
-        searchParams.set('diet', 'vegan');
-      } else if (category.name === 'Gluten Free') {
-        searchParams.set('intolerances', 'gluten');
-      } else if (category.name === 'Keto') {
-        searchParams.set('diet', 'ketogenic');
+      // Use clean URL for cuisines: /category/italian
+      navigate(`/category/${category.name.toLowerCase()}`);
+    } else {
+      // For other types, use query parameters
+      const searchParams = new URLSearchParams();
+
+      if (category.type === 'meal') {
+        searchParams.set('type', category.name.toLowerCase());
+      } else if (category.type === 'diet') {
+        if (category.name === 'Vegetarian') {
+          searchParams.set('diet', 'vegetarian');
+        } else if (category.name === 'Vegan') {
+          searchParams.set('diet', 'vegan');
+        } else if (category.name === 'Gluten Free') {
+          searchParams.set('intolerances', 'gluten');
+        } else if (category.name === 'Keto') {
+          searchParams.set('diet', 'ketogenic');
+        }
+      } else if (category.type === 'time') {
+        if (category.name === 'Quick & Easy') {
+          searchParams.set('maxReadyTime', '30');
+        }
       }
-    } else if (category.type === 'time') {
-      if (category.name === 'Quick & Easy') {
-        searchParams.set('maxReadyTime', '30');
-      }
+
+      navigate(`/search?${searchParams.toString()}`);
     }
-    
-    // Navigate to search results with category filter
-    navigate(`/search?${searchParams.toString()}`, {
-      state: { 
-        categoryName: category.name,
-        categoryDescription: category.description 
-      }
-    });
   };
 
   // Get categories to display based on search/filter state

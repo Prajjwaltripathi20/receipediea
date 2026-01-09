@@ -12,7 +12,7 @@ const Navbar = () => {
   const [profileDropdown, setProfileDropdown] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { currentUser, loading, signOut } = useAuth();
+  const { currentUser, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {

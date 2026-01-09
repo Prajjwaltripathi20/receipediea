@@ -1,7 +1,7 @@
+/* App.css - Minimal base styles */
+
 .app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
-
-/* Add any global styles that should apply to the entire app */ 

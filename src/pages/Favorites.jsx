@@ -7,198 +7,34 @@ import Footer from '../components/Footer';
 import '../styles/Favorites.css';
 
 const Favorites = () => {
-  const { currentUser, getFavorites } = useAuth();
+  const { favorites } = useAuth();
   const [favoriteRecipes, setFavoriteRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredRecipes, setFilteredRecipes] = useState([]);
 
   useEffect(() => {
-    const fetchFavoriteRecipes = async () => {
-      setLoading(true);
-      try {
-        // Get favorite recipe IDs from localStorage
-        const favoriteIds = getFavorites();
-        
-        if (favoriteIds.length === 0) {
-          setFavoriteRecipes([]);
-          setFilteredRecipes([]);
-          setLoading(false);
-          return;
-        }
+    setFavoriteRecipes(favorites);
+    setLoading(false);
+  }, [favorites]);
 
-        // In a real app, you would fetch recipe details from an API
-        // const promises = favoriteIds.map(id => 
-        //   fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=YOUR_API_KEY`)
-        //     .then(res => res.json())
-        // );
-        // const recipes = await Promise.all(promises);
-        
-        // Mock data for demonstration
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Generate mock recipes based on IDs
-        const mockRecipes = generateMockRecipes(favoriteIds);
-        setFavoriteRecipes(mockRecipes);
-        setFilteredRecipes(mockRecipes);
-      } catch (error) {
-        console.error('Error fetching favorite recipes:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFavoriteRecipes();
-  }, [getFavorites]);
-
-  // Generate mock recipes based on IDs
-  const generateMockRecipes = (ids) => {
-    const allMockRecipes = [
-      {
-        id: 1,
-        title: 'Butter Chicken',
-        image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
-        readyInMinutes: 45,
-        servings: 4,
-        vegetarian: false,
-        vegan: false,
-        glutenFree: true
-      },
-      {
-        id: 2,
-        title: 'Paneer Tikka Masala',
-        image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
-        readyInMinutes: 35,
-        servings: 3,
-        vegetarian: true,
-        vegan: false,
-        glutenFree: true
-      },
-      {
-        id: 3,
-        title: 'Gulab Jamun',
-        image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
-        readyInMinutes: 30,
-        servings: 6,
-        vegetarian: true,
-        vegan: false,
-        glutenFree: false
-      },
-      {
-        id: 4,
-        title: 'Vegetable Biryani',
-        image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
-        readyInMinutes: 50,
-        servings: 4,
-        vegetarian: true,
-        vegan: true,
-        glutenFree: true
-      },
-      {
-        id: 5,
-        title: 'Chicken Tikka',
-        image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
-        readyInMinutes: 40,
-        servings: 3,
-        vegetarian: false,
-        vegan: false,
-        glutenFree: true
-      },
-      {
-        id: 6,
-        title: 'Masala Dosa',
-        image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
-        readyInMinutes: 30,
-        servings: 2,
-        vegetarian: true,
-        vegan: true,
-        glutenFree: false
-      },
-      {
-        id: 7,
-        title: 'Aloo Gobi',
-        image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
-        readyInMinutes: 25,
-        servings: 4,
-        vegetarian: true,
-        vegan: true,
-        glutenFree: true
-      },
-      {
-        id: 8,
-        title: 'Chicken Curry',
-        image: 'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
-        readyInMinutes: 40,
-        servings: 4,
-        vegetarian: false,
-        vegan: false,
-        glutenFree: true
-      },
-      {
-        id: 9,
-        title: 'Samosas',
-        image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
-        readyInMinutes: 35,
-        servings: 6,
-        vegetarian: true,
-        vegan: false,
-        glutenFree: false
-      },
-      {
-        id: 10,
-        title: 'Tandoori Chicken',
-        image: 'https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
-        readyInMinutes: 45,
-        servings: 4,
-        vegetarian: false,
-        vegan: false,
-        glutenFree: true
-      },
-      {
-        id: 11,
-        title: 'Palak Paneer',
-        image: 'https://images.unsplash.com/photo-1596797038530-2c107aa8e1fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
-        readyInMinutes: 30,
-        servings: 3,
-        vegetarian: true,
-        vegan: false,
-        glutenFree: true
-      },
-      {
-        id: 12,
-        title: 'Naan Bread',
-        image: 'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80',
-        readyInMinutes: 20,
-        servings: 4,
-        vegetarian: true,
-        vegan: false,
-        glutenFree: false
-      }
-    ];
-
-    // Filter recipes based on IDs
-    return allMockRecipes.filter(recipe => ids.includes(recipe.id));
-  };
-
-  // Handle search input change
-  const handleSearchChange = (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(query);
-    
-    if (query.trim() === '') {
+  useEffect(() => {
+    if (!searchQuery.trim()) {
       setFilteredRecipes(favoriteRecipes);
     } else {
-      const filtered = favoriteRecipes.filter(recipe => 
-        recipe.title.toLowerCase().includes(query)
+      const filtered = favoriteRecipes.filter(recipe =>
+        recipe?.title?.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredRecipes(filtered);
     }
+  }, [favoriteRecipes, searchQuery]);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
   };
 
-  // Clear search
   const clearSearch = () => {
     setSearchQuery('');
-    setFilteredRecipes(favoriteRecipes);
   };
 
   return (
@@ -241,7 +77,11 @@ const Favorites = () => {
             </div>
           ) : (
             <div className="no-favorites">
-              <img src="https://undraw.co/api/illustrations/undraw_cooking_lyxy.svg" alt="No favorites" style={{ maxWidth: '260px', marginBottom: '1.5rem' }} />
+              <img
+                src="https://undraw.co/api/illustrations/undraw_cooking_lyxy.svg"
+                alt="No favorites"
+                style={{ maxWidth: '260px', marginBottom: '1.5rem' }}
+              />
               <h2>No saved recipes yet</h2>
               <p>Your favorite recipes will appear here. Start exploring and save your favorites!</p>
               <Link to="/search" className="explore-btn">Explore Recipes</Link>

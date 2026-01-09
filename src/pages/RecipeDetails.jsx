@@ -16,7 +16,7 @@ const RecipeDetails = () => {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('ingredients');
   const [isRecipeFavorite, setIsRecipeFavorite] = useState(false);
-  const [similarRecipes, setSimilarRecipes] = useState([]);
+  // const [similarRecipes, setSimilarRecipes] = useState([]);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
@@ -24,10 +24,10 @@ const RecipeDetails = () => {
       try {
         setLoading(true);
         setError(null);
-        
+
         // Use Spoonacular API to get recipe details
         const recipeData = await recipeService.getRecipeDetails(id);
-        
+
         setRecipe(recipeData);
         setLoading(false);
       } catch (error) {
@@ -46,7 +46,7 @@ const RecipeDetails = () => {
 
     fetchRecipeDetails();
     checkFavorite();
-    
+
     // Scroll to top when component mounts
     window.scrollTo(0, 0);
   }, [id, currentUser, isFavorite]);
@@ -60,7 +60,7 @@ const RecipeDetails = () => {
     if (isRecipeFavorite) {
       removeFromFavorites(parseInt(id));
     } else {
-      addToFavorites(parseInt(id));
+      addToFavorites(recipe);
     }
     setIsRecipeFavorite(!isRecipeFavorite);
   };
@@ -72,7 +72,7 @@ const RecipeDetails = () => {
         text: `Check out this delicious ${recipe.title} recipe!`,
         url: window.location.href
       })
-      .catch(error => console.log('Error sharing:', error));
+        .catch(error => console.log('Error sharing:', error));
     } else {
       // Fallback for browsers that don't support navigator.share
       navigator.clipboard.writeText(window.location.href)
@@ -127,7 +127,7 @@ const RecipeDetails = () => {
               <FaArrowLeft /> Back
             </Link>
             <div className="recipe-actions">
-              <button 
+              <button
                 className={`action-button favorite-button ${isRecipeFavorite ? 'active' : ''}`}
                 onClick={toggleFavorite}
                 aria-label={isRecipeFavorite ? 'Remove from favorites' : 'Add to favorites'}
@@ -143,15 +143,15 @@ const RecipeDetails = () => {
             </div>
           </div>
 
-          <motion.div 
+          <motion.div
             className="recipe-hero"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
             <div className="recipe-image-container">
-              <img 
-                src={recipe.image} 
+              <img
+                src={recipe.image}
                 alt={recipe.title}
                 className="recipe-hero-image"
                 onError={(e) => {
@@ -159,17 +159,17 @@ const RecipeDetails = () => {
                 }}
               />
             </div>
-            
+
             <div className="recipe-info">
               <h1 className="recipe-title">{recipe.title}</h1>
-              
+
               {recipe.summary && (
-                <div 
+                <div
                   className="recipe-summary"
                   dangerouslySetInnerHTML={{ __html: recipe.summary }}
                 />
               )}
-              
+
               <div className="recipe-stats">
                 <div className="stat">
                   <FaClock />
@@ -186,7 +186,7 @@ const RecipeDetails = () => {
                   </div>
                 )}
               </div>
-              
+
               <div className="recipe-badges">
                 {recipe.vegetarian && <span className="badge vegetarian">Vegetarian</span>}
                 {recipe.vegan && <span className="badge vegan">Vegan</span>}
@@ -198,20 +198,20 @@ const RecipeDetails = () => {
 
           <div className="recipe-content">
             <div className="recipe-tabs">
-              <button 
+              <button
                 className={`tab ${activeTab === 'ingredients' ? 'active' : ''}`}
                 onClick={() => setActiveTab('ingredients')}
               >
                 Ingredients
               </button>
-              <button 
+              <button
                 className={`tab ${activeTab === 'instructions' ? 'active' : ''}`}
                 onClick={() => setActiveTab('instructions')}
               >
                 Instructions
               </button>
               {recipe.nutrition && (
-                <button 
+                <button
                   className={`tab ${activeTab === 'nutrition' ? 'active' : ''}`}
                   onClick={() => setActiveTab('nutrition')}
                 >
@@ -250,7 +250,7 @@ const RecipeDetails = () => {
                       ))}
                     </ol>
                   ) : recipe.instructions ? (
-                    <div 
+                    <div
                       className="instructions-text"
                       dangerouslySetInnerHTML={{ __html: recipe.instructions }}
                     />
@@ -281,7 +281,7 @@ const RecipeDetails = () => {
         <Footer />
       </div>
 
-      <AuthModal 
+      <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         initialMode="login"

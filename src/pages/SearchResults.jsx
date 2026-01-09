@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { FaSearch, FaFilter, FaTimes } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import RecipeCard from '../components/RecipeCard';
@@ -9,13 +9,13 @@ import '../styles/SearchResults.css';
 
 const SearchResults = () => {
   const location = useLocation();
+  const { categoryName } = useParams(); // Get category from URL path like /category/indian
   const searchParams = new URLSearchParams(location.search);
   const initialQuery = searchParams.get('query') || '';
 
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     diet: [],
@@ -23,29 +23,33 @@ const SearchResults = () => {
     cuisine: [],
     maxReadyTime: 60,
   });
-  const [categoryInfo, setCategoryInfo] = useState(null);
 
   // Fetch recipes based on search query and URL parameters
   useEffect(() => {
     const fetchRecipes = async () => {
       setLoading(true);
-      setError(null);
 
       try {
         // Get URL parameters for category-based searches
         const urlParams = new URLSearchParams(location.search);
-        const cuisine = urlParams.get('cuisine');
-        const diet = urlParams.get('diet');
-        const type = urlParams.get('type');
+        let cuisine = urlParams.get('cuisine');
+        let diet = urlParams.get('diet');
+        let type = urlParams.get('type');
         const intolerances = urlParams.get('intolerances');
         const maxReadyTime = urlParams.get('maxReadyTime');
 
-        // Check if this is a category-based search from Categories page
-        if (location.state?.categoryName) {
-          setCategoryInfo({
-            name: location.state.categoryName,
-            description: location.state.categoryDescription
-          });
+        // Handle categoryName from URL path (e.g., /category/indian)
+        if (categoryName) {
+          const categoryLower = categoryName.toLowerCase();
+          // Map special category names to correct API parameters
+          if (['vegetarian', 'vegan', 'healthy'].includes(categoryLower)) {
+            diet = categoryLower === 'healthy' ? 'healthy' : categoryLower;
+          } else if (['desserts', 'dessert', 'breakfast', 'lunch', 'dinner', 'snack'].includes(categoryLower)) {
+            type = categoryLower === 'desserts' ? 'dessert' : categoryLower;
+          } else {
+            // Default: treat as cuisine
+            cuisine = categoryLower;
+          }
         }
 
         // Build search options
@@ -82,7 +86,7 @@ const SearchResults = () => {
           searchOptions.query = searchQuery;
           data = await recipeService.complexSearch(searchOptions);
           setRecipes(data.results || []);
-        } else if (cuisine || diet || type || intolerances || Object.values(filters).some(f => Array.isArray(f) ? f.length > 0 : f !== 60)) {
+        } else if (categoryName || cuisine || diet || type || intolerances || Object.values(filters).some(f => Array.isArray(f) ? f.length > 0 : f !== 60)) {
           // Category or filter-based search
           data = await recipeService.complexSearch(searchOptions);
           setRecipes(data.results || []);
@@ -94,7 +98,6 @@ const SearchResults = () => {
 
       } catch (err) {
         console.error('Error fetching recipes:', err);
-        setError(err.message || 'Failed to fetch recipes. Please try again.');
         setRecipes([]);
       } finally {
         setLoading(false);
@@ -102,7 +105,7 @@ const SearchResults = () => {
     };
 
     fetchRecipes();
-  }, [searchQuery, filters, location.search, location.state]);
+  }, [searchQuery, filters, location.search, categoryName]);
 
   // Handle search form submission
   const handleSearch = (e) => {
@@ -117,18 +120,18 @@ const SearchResults = () => {
   const toggleFilter = (type, value) => {
     setFilters(prevFilters => {
       const updatedFilters = { ...prevFilters };
-      
+
       if (type === 'maxReadyTime') {
         updatedFilters.maxReadyTime = value;
         return updatedFilters;
       }
-      
+
       if (updatedFilters[type].includes(value)) {
         updatedFilters[type] = updatedFilters[type].filter(item => item !== value);
       } else {
         updatedFilters[type] = [...updatedFilters[type], value];
       }
-      
+
       return updatedFilters;
     });
   };
@@ -161,9 +164,9 @@ const SearchResults = () => {
                 className="search-input"
               />
               {searchQuery && (
-                <button 
-                  type="button" 
-                  className="clear-search" 
+                <button
+                  type="button"
+                  className="clear-search"
                   onClick={() => setSearchQuery('')}
                 >
                   <FaTimes />
@@ -171,8 +174,8 @@ const SearchResults = () => {
               )}
             </div>
             <button type="submit" className="search-button">Search</button>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className={`filter-toggle ${showFilters ? 'active' : ''}`}
               onClick={() => setShowFilters(!showFilters)}
             >
@@ -183,7 +186,7 @@ const SearchResults = () => {
 
         {/* Filters Section */}
         {showFilters && (
-          <motion.div 
+          <motion.div
             className="filters-section"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
@@ -258,7 +261,7 @@ const SearchResults = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="filter-actions">
               <button className="clear-filters" onClick={clearFilters}>
                 Clear All Filters

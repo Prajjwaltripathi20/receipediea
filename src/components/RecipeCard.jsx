@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaClock, FaUtensils, FaHeart } from 'react-icons/fa';
 import { useAuth } from '../contexts/AuthContext';
@@ -6,28 +6,24 @@ import AuthModal from './AuthModal';
 import '../styles/RecipeCard.css';
 
 const RecipeCard = ({ recipe, showSaveButton = true }) => {
-  const {
-    id,
-    title,
-    image,
-    readyInMinutes,
-    servings,
-    vegetarian,
-    vegan,
-    glutenFree,
-    usedIngredientCount,
-    missedIngredientCount
-  } = recipe;
-
   const { currentUser, addToFavorites, removeFromFavorites, isFavorite } = useAuth();
-  const [isRecipeFavorite, setIsRecipeFavorite] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
 
-  useEffect(() => {
-    if (currentUser) {
-      setIsRecipeFavorite(isFavorite(id));
-    }
-  }, [currentUser, id, isFavorite]);
+  const {
+    id = '',
+    title = 'Untitled',
+    image = '',
+    readyInMinutes = 0,
+    servings = 0,
+    vegetarian = false,
+    vegan = false,
+    glutenFree = false,
+    usedIngredientCount,
+    missedIngredientCount
+  } = recipe || {};
+
+  // Use context favorites for real-time updates
+  const isRecipeFavorite = id ? isFavorite(id) : false;
 
   const handleImageError = (e) => {
     e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80';
@@ -36,27 +32,26 @@ const RecipeCard = ({ recipe, showSaveButton = true }) => {
   const handleSaveClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    
     if (!currentUser) {
       setShowAuthModal(true);
       return;
     }
-
     if (isRecipeFavorite) {
       removeFromFavorites(id);
     } else {
-      addToFavorites(id);
+      addToFavorites(recipe);
     }
-    setIsRecipeFavorite(!isRecipeFavorite);
   };
+
+  if (!id) return null;
 
   return (
     <>
       <div className="recipe-card">
         <div className="recipe-image-container">
-          <img 
-            src={image} 
-            alt={title} 
+          <img
+            src={image || 'https://via.placeholder.com/300x200?text=No+Image'}
+            alt={title}
             className="recipe-image"
             onError={handleImageError}
             loading="lazy"
@@ -68,7 +63,7 @@ const RecipeCard = ({ recipe, showSaveButton = true }) => {
               {glutenFree && <span className="badge gluten-free">Gluten Free</span>}
             </div>
             {showSaveButton && (
-              <button 
+              <button
                 className={`save-button ${isRecipeFavorite ? 'saved' : ''}`}
                 onClick={handleSaveClick}
                 aria-label={isRecipeFavorite ? 'Remove from favorites' : 'Add to favorites'}
@@ -100,8 +95,7 @@ const RecipeCard = ({ recipe, showSaveButton = true }) => {
           </Link>
         </div>
       </div>
-
-      <AuthModal 
+      <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
         initialMode="login"
@@ -110,4 +104,4 @@ const RecipeCard = ({ recipe, showSaveButton = true }) => {
   );
 };
 
-export default RecipeCard; 
+export default RecipeCard;

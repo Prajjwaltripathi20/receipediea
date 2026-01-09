@@ -137,7 +137,7 @@ const Contact = () => {
                 </div>
                 <div className="contact-text">
                   <h3>Email Us</h3>
-                  <p>hello@resciepe.com</p>
+                  <p>Connectwithprajjwal@gmail.com</p>
                   <p>support@resciepe.com</p>
                 </div>
               </div>
@@ -148,7 +148,7 @@ const Contact = () => {
                 </div>
                 <div className="contact-text">
                   <h3>Call Us</h3>
-                  <p>+1 (555) 123-4567</p>
+                  <p>8708598631</p>
                   <p>Mon-Fri, 9am-5pm EST</p>
                 </div>
               </div>
@@ -159,8 +159,8 @@ const Contact = () => {
                 </div>
                 <div className="contact-text">
                   <h3>Visit Us</h3>
-                  <p>123 Culinary Avenue</p>
-                  <p>Foodie City, FC 12345</p>
+                  <p>Rishihood University</p>
+                  <p>Sonipat, Haryana</p>
                 </div>
               </div>
             </div>
@@ -217,7 +217,7 @@ const Contact = () => {
                   <label htmlFor="email">Your Email</label>
                   <input
                     type="email"
-                    id="email"
+                    id="new_email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}

@@ -13,6 +13,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const { login, register } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -64,7 +65,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setLoading(true);
@@ -108,104 +109,146 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="auth-modal-backdrop" onClick={handleBackdropClick}>
-      <div className="auth-modal">
-        <button className="auth-modal-close" onClick={onClose}>
-          <i className="fas fa-times"></i>
-        </button>
-        
-        <div className="auth-modal-header">
-          <h2>{mode === 'login' ? 'Welcome Back' : 'Create Account'}</h2>
-          <p>
-            {mode === 'login' 
-              ? 'Sign in to save your favorite recipes' 
-              : 'Join us to start saving recipes'
-            }
-          </p>
+    <div className="auth-drawer-backdrop" onClick={handleBackdropClick}>
+      <div className="auth-drawer">
+        {/* Header */}
+        <div className="auth-drawer-header">
+          <div className="drawer-branding">
+            <div className="drawer-logo-icon">
+              <i className="fas fa-utensils"></i>
+            </div>
+            <div className="drawer-logo-text">
+              <h3>Recipedia</h3>
+              <span>Your digital cookbook</span>
+            </div>
+          </div>
+          <button className="auth-drawer-close" onClick={onClose}>
+            <i className="fas fa-times"></i>
+          </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          {mode === 'register' && (
-            <div className="form-group">
-              <label htmlFor="displayName">Full Name</label>
-              <input
-                type="text"
-                id="displayName"
-                name="displayName"
-                value={formData.displayName}
-                onChange={handleInputChange}
-                className={errors.displayName ? 'error' : ''}
-                placeholder="Enter your full name"
-              />
-              {errors.displayName && <span className="error-message">{errors.displayName}</span>}
-            </div>
-          )}
-
-          <div className="form-group">
-            <label htmlFor="email">Email Address</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              className={errors.email ? 'error' : ''}
-              placeholder="Enter your email"
-            />
-            {errors.email && <span className="error-message">{errors.email}</span>}
+        <div className="auth-drawer-content">
+          <div className="drawer-title-section">
+            <h2>{mode === 'login' ? 'Welcome Back' : 'Create Account'}</h2>
+            <p>
+              {mode === 'login'
+                ? 'Log in to access your saved recipes and meal plans.'
+                : 'Join us to save recipes and create meal plans.'}
+            </p>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              className={errors.password ? 'error' : ''}
-              placeholder="Enter your password"
-            />
-            {errors.password && <span className="error-message">{errors.password}</span>}
-          </div>
-
-          {mode === 'register' && (
-            <div className="form-group">
-              <label htmlFor="confirmPassword">Confirm Password</label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                className={errors.confirmPassword ? 'error' : ''}
-                placeholder="Confirm your password"
-              />
-              {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
-            </div>
-          )}
-
-          {errors.submit && <div className="error-message submit-error">{errors.submit}</div>}
-
-          <button type="submit" className="auth-submit-btn" disabled={loading}>
-            {loading ? (
-              <span>
-                <i className="fas fa-spinner fa-spin"></i>
-                {mode === 'login' ? 'Signing In...' : 'Creating Account...'}
-              </span>
-            ) : (
-              mode === 'login' ? 'Sign In' : 'Create Account'
+          <form onSubmit={handleSubmit} className="auth-drawer-form">
+            {mode === 'register' && (
+              <div className="drawer-form-group">
+                <label htmlFor="displayName">Full Name</label>
+                <input
+                  type="text"
+                  id="displayName"
+                  name="displayName"
+                  value={formData.displayName}
+                  onChange={handleInputChange}
+                  className={errors.displayName ? 'error' : ''}
+                  placeholder="e.g. Jamie Oliver"
+                />
+                {errors.displayName && <span className="drawer-error">{errors.displayName}</span>}
+              </div>
             )}
-          </button>
-        </form>
 
-        <div className="auth-switch">
-          <p>
-            {mode === 'login' ? "Don't have an account? " : "Already have an account? "}
-            <button type="button" onClick={switchMode} className="auth-switch-btn">
-              {mode === 'login' ? 'Sign Up' : 'Sign In'}
+            <div className="drawer-form-group">
+              <label htmlFor="email">Email Address</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className={errors.email ? 'error' : ''}
+                placeholder="e.g. jamie@example.com"
+              />
+              {errors.email && <span className="drawer-error">{errors.email}</span>}
+            </div>
+
+            <div className="drawer-form-group">
+              <div className="password-label-row">
+                <label htmlFor="password">Password</label>
+                {mode === 'login' && (
+                  <button type="button" className="forgot-password-link">Forgot password?</button>
+                )}
+              </div>
+              <div className="password-input-wrapper">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className={errors.password ? 'error' : ''}
+                  placeholder="Enter your password"
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  <i className={`far fa-eye${showPassword ? '-slash' : ''}`}></i>
+                </button>
+              </div>
+              {errors.password && <span className="drawer-error">{errors.password}</span>}
+            </div>
+
+            {mode === 'register' && (
+              <div className="drawer-form-group">
+                <label htmlFor="confirmPassword">Confirm Password</label>
+                <div className="password-input-wrapper">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    className={errors.confirmPassword ? 'error' : ''}
+                    placeholder="Confirm your password"
+                  />
+                </div>
+                {errors.confirmPassword && <span className="drawer-error">{errors.confirmPassword}</span>}
+              </div>
+            )}
+
+            {errors.submit && <div className="drawer-error submit-error">{errors.submit}</div>}
+
+            <button type="submit" className="drawer-submit-btn" disabled={loading}>
+              {loading ? (
+                <span><i className="fas fa-spinner fa-spin"></i> Processing...</span>
+              ) : (
+                <>
+                  {mode === 'login' ? 'Login to Account' : 'Create Account'}
+                  <i className="fas fa-arrow-right"></i>
+                </>
+              )}
             </button>
-          </p>
+          </form>
+
+          <div className="drawer-divider">
+            <span>OR CONTINUE WITH</span>
+          </div>
+
+          <div className="social-login-buttons">
+            <button type="button" className="social-btn google">
+              <i className="fab fa-google"></i> Google
+            </button>
+            <button type="button" className="social-btn apple">
+              <i className="fab fa-apple"></i> Apple
+            </button>
+          </div>
+
+          <div className="drawer-footer">
+            <p>
+              {mode === 'login' ? "Don't have an account? " : "Already have an account? "}
+              <button type="button" onClick={switchMode} className="drawer-switch-link">
+                {mode === 'login' ? 'Sign up for free' : 'Log in'}
+              </button>
+            </p>
+          </div>
         </div>
       </div>
     </div>

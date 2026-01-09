@@ -1,155 +1,144 @@
+/* Auth Pages - New Green Theme Design */
+
 .auth-page {
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: var(--color-bg);
 }
 
 .auth-container {
-  display: flex;
-  flex: 1;
-  max-width: 1200px;
-  margin: 2rem auto;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  overflow: hidden;
+  background: var(--color-white);
+  border-radius: var(--radius-2xl);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid var(--color-border);
 }
 
-.auth-form-container {
-  flex: 1;
-  padding: 3rem;
-  background-color: #fff;
-  display: flex;
-  flex-direction: column;
-}
-
-.auth-form-container h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-.auth-subtitle {
-  color: #666;
+.auth-header {
+  text-align: center;
   margin-bottom: 2rem;
+}
+
+.auth-header .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.auth-header .logo-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--color-primary);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white);
+  font-size: 1.1rem;
+}
+
+.auth-header .logo-text {
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.auth-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
 }
 
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
-  margin-bottom: 1.5rem;
+  gap: 1.25rem;
 }
 
 .form-group {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.input-icon {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
 }
 
-.auth-form input {
-  width: 100%;
-  padding: 15px 15px 15px 45px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+.form-group input {
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   font-size: 1rem;
-  transition: border-color 0.3s;
+  font-family: inherit;
+  transition: all var(--transition-fast);
+  background: var(--color-bg);
 }
 
-.auth-form input:focus {
-  border-color: #ff6b6b;
+.form-group input:focus {
   outline: none;
+  border-color: var(--color-primary);
+  background: var(--color-white);
 }
 
-.auth-button {
-  background-color: #ff6b6b;
-  color: white;
+.form-group input.error {
+  border-color: #ef4444;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.8rem;
+}
+
+.auth-submit-btn {
+  padding: 1rem 2rem;
+  background: var(--color-primary);
+  color: var(--color-white);
   border: none;
-  padding: 15px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
-  margin-top: 1rem;
+  transition: all var(--transition-fast);
+  margin-top: 0.5rem;
 }
 
-.auth-button:hover {
-  background-color: #ff5252;
+.auth-submit-btn:hover:not(:disabled) {
+  background: var(--color-primary-hover);
 }
 
-.auth-button:disabled {
-  background-color: #ffb8b8;
+.auth-submit-btn:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
-.auth-divider {
-  display: flex;
-  align-items: center;
-  margin: 1.5rem 0;
-  color: #888;
-}
-
-.auth-divider::before,
-.auth-divider::after {
-  content: "";
-  flex: 1;
-  border-bottom: 1px solid #ddd;
-}
-
-.auth-divider span {
-  padding: 0 10px;
-}
-
-.social-auth-buttons {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.social-auth-button {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 12px;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  border: 1px solid #ddd;
-  background-color: white;
-}
-
-.social-auth-button.google:hover {
-  background-color: #f1f1f1;
-}
-
-.social-auth-button.facebook {
-  background-color: #3b5998;
-  color: white;
-  border: none;
-}
-
-.social-auth-button.facebook:hover {
-  background-color: #344e86;
-}
-
 .auth-footer {
-  margin-top: auto;
   text-align: center;
-  color: #666;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.auth-footer p {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
 }
 
 .auth-footer a {
-  color: #ff6b6b;
-  text-decoration: none;
+  color: var(--color-primary);
   font-weight: 600;
 }
 
@@ -157,69 +146,13 @@
   text-decoration: underline;
 }
 
-.auth-error {
-  background-color: #ffebee;
-  color: #d32f2f;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-  font-size: 0.9rem;
-}
-
-.auth-image-container {
-  flex: 1;
-  display: none;
-}
-
-.auth-image {
-  background-image: url('https://images.unsplash.com/photo-1495521821757-a1efb6729352?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
-  background-size: cover;
-  background-position: center;
-  height: 100%;
-  position: relative;
-}
-
-.auth-image-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.7));
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 2rem;
-  color: white;
-}
-
-.auth-image-overlay h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-}
-
-.auth-image-overlay p {
-  font-size: 1.1rem;
-  max-width: 400px;
-}
-
-@media (min-width: 768px) {
-  .auth-image-container {
-    display: block;
-  }
-}
-
-@media (max-width: 768px) {
+/* Responsive */
+@media (max-width: 480px) {
   .auth-container {
-    flex-direction: column;
-    margin: 1rem;
+    padding: 2rem 1.5rem;
   }
-  
-  .auth-form-container {
-    padding: 2rem;
-  }
-  
-  .auth-form-container h1 {
-    font-size: 2rem;
+
+  .auth-header h1 {
+    font-size: 1.5rem;
   }
 }

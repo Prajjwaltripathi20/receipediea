@@ -5,7 +5,8 @@ import Footer from '../components/Footer';
 import '../styles/About.css';
 
 const About = () => {
-  // Team members data
+  // Team members data (commented out as team section is not shown)
+  /*
   const teamMembers = [
     {
       id: 1,
@@ -36,6 +37,7 @@ const About = () => {
       bio: 'Priya creates and tests innovative recipes, combining traditional techniques with modern flavors.',
     },
   ];
+  */
 
   // Features data
   const features = [
@@ -70,23 +72,21 @@ const About = () => {
       <div className="about-container">
         {/* Hero Section */}
         <section className="about-hero">
-          <motion.div 
+          <motion.div
             className="hero-content"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 style={{ color: '#232526' }}>About Recipedia</h1>
-            {/* Remove or add more gap below the hero title for a modern look */}
-            <div style={{ marginBottom: '2.2rem' }}></div>
-            {/* <p className="hero-subtitle">Discover the story behind your favorite recipe platform</p> */}
+            <h1>About Recipedia</h1>
+            <p>Discover the story behind your favorite recipe platform and join our mission to make cooking accessible for everyone.</p>
           </motion.div>
         </section>
 
         {/* Mission Section */}
         <section className="about-mission">
           <div className="mission-content">
-            <motion.div 
+            <motion.div
               className="mission-text"
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -101,7 +101,7 @@ const About = () => {
                 We're committed to providing high-quality, tested recipes that are reliable and achievable, along with the tools and resources you need to succeed in the kitchen. Whether you're a beginner looking to learn the basics or an experienced cook seeking new challenges, Resciepe is here to support your culinary journey.
               </p>
             </motion.div>
-            <motion.div 
+            <motion.div
               className="mission-image"
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -118,8 +118,8 @@ const About = () => {
           <h2>What Makes Us Special</h2>
           <div className="features-grid">
             {features.map((feature, index) => (
-              <motion.div 
-                key={feature.id} 
+              <motion.div
+                key={feature.id}
                 className="feature-card"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -137,7 +137,7 @@ const About = () => {
         {/* Story Section */}
         <section className="about-story">
           <div className="story-content">
-            <motion.div 
+            <motion.div
               className="story-image"
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -146,7 +146,7 @@ const About = () => {
             >
               <img src="https://images.unsplash.com/photo-1507048331197-7d4ac70811cf?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Kitchen with ingredients" />
             </motion.div>
-            <motion.div 
+            <motion.div
               className="story-text"
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -199,7 +199,7 @@ const About = () => {
         <section className="about-values">
           <h2>Our Values</h2>
           <div className="values-container">
-            <motion.div 
+            <motion.div
               className="value-item"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -209,7 +209,7 @@ const About = () => {
               <h3>Quality</h3>
               <p>We're committed to providing thoroughly tested recipes that work every time, using ingredients that are accessible to most home cooks.</p>
             </motion.div>
-            <motion.div 
+            <motion.div
               className="value-item"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -219,7 +219,7 @@ const About = () => {
               <h3>Inclusivity</h3>
               <p>We celebrate the diversity of global cuisines and strive to make cooking accessible to people of all backgrounds, abilities, and dietary preferences.</p>
             </motion.div>
-            <motion.div 
+            <motion.div
               className="value-item"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -229,7 +229,7 @@ const About = () => {
               <h3>Education</h3>
               <p>We believe in empowering home cooks with knowledge, from basic techniques to advanced skills, helping everyone become more confident in the kitchen.</p>
             </motion.div>
-            <motion.div 
+            <motion.div
               className="value-item"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
