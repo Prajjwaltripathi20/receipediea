@@ -225,8 +225,8 @@
 
 .recipe-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
 }
 
 /* Categories Section - New Circular Style */
@@ -277,6 +277,8 @@
 .category-card:hover svg {
   background: var(--color-primary);
   color: var(--color-white);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
 }
 
 .category-card span {
@@ -295,8 +297,8 @@
 
 .trending-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
 }
 
 /* CTA Section */
@@ -388,11 +390,7 @@
 
 /* Responsive */
 @media (max-width: 1024px) {
-
-  .recipe-grid,
-  .trending-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  /* Removed grid-template-columns override to let auto-fill handle it */
 }
 
 @media (max-width: 768px) {
@@ -405,9 +403,14 @@
     font-size: 1.75rem;
   }
 
+  /* Let grid auto-adjust or use 2 columns minimum on mobile if needed,
+     but 200px fits 2 on many mobiles, or 1 on very small.
+     We can stick to auto-fill or force 2 on mobile if appropriate,
+     but usually 1 is better on mobile. */
   .recipe-grid,
   .trending-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
   }
 
   .cuisine-grid,

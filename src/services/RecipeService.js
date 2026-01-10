@@ -117,7 +117,7 @@ class RecipeService {
 
     try {
       const response = await fetch(`${url}?${params}`);
-      
+
       if (!response.ok) {
         throw new APIError(
           `API request failed: ${response.statusText}`,
@@ -158,8 +158,8 @@ class RecipeService {
 
   // Search recipes by ingredients
   async searchByIngredients(ingredients, options = {}) {
-    const ingredientString = Array.isArray(ingredients) 
-      ? ingredients.join(',') 
+    const ingredientString = Array.isArray(ingredients)
+      ? ingredients.join(',')
       : ingredients;
 
     const cacheKey = `ingredients_${ingredientString}_${JSON.stringify(options)}`;
@@ -308,6 +308,29 @@ class RecipeService {
       return data;
     } catch (error) {
       throw new Error(handleAPIError(error, 'Failed to get recipe equipment'));
+    }
+  }
+
+  // Get autocomplete suggestions
+  async getAutocomplete(query) {
+    if (!query || query.length < 2) return [];
+
+    const cacheKey = `autocomplete_${query}`;
+    const cached = this.getCachedData(cacheKey);
+    if (cached) return cached;
+
+    try {
+      const params = {
+        query: query,
+        number: 5
+      };
+
+      const data = await this.makeRequest('/recipes/autocomplete', params);
+      this.setCachedData(cacheKey, data);
+      return data;
+    } catch (error) {
+      console.warn('Autocomplete request failed:', error);
+      return [];
     }
   }
 

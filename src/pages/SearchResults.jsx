@@ -4,6 +4,7 @@ import { FaSearch, FaFilter, FaTimes } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import RecipeCard from '../components/RecipeCard';
 import Footer from '../components/Footer';
+import SkeletonCard from '../components/SkeletonCard';
 import recipeService from '../services/RecipeService';
 import '../styles/SearchResults.css';
 
@@ -276,9 +277,8 @@ const SearchResults = () => {
         {/* Results Section */}
         <div className="search-results-content">
           {loading ? (
-            <div className="loading-container">
-              <div className="loading-spinner"></div>
-              <p>Searching for recipes...</p>
+            <div className="recipes-grid">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map(n => <SkeletonCard key={n} />)}
             </div>
           ) : recipes.length > 0 ? (
             <>

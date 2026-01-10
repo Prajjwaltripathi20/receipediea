@@ -161,7 +161,7 @@ const RecipeDetails = () => {
             </div>
 
             <div className="recipe-info">
-              <h1 className="recipe-title">{recipe.title}</h1>
+              <h1 className="recipe-details-title">{recipe.title}</h1>
 
               {recipe.summary && (
                 <div

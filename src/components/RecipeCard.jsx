@@ -26,7 +26,10 @@ const RecipeCard = ({ recipe, showSaveButton = true }) => {
   const isRecipeFavorite = id ? isFavorite(id) : false;
 
   const handleImageError = (e) => {
-    e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80';
+    // Prevent infinite loop if fallback also fails
+    if (e.target.src !== 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') {
+      e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80';
+    }
   };
 
   const handleSaveClick = (e) => {

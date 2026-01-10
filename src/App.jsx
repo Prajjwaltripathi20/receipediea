@@ -11,13 +11,14 @@ import RecipeDetails from './pages/RecipeDetails';
 import IngredientSearch from './pages/IngredientSearch';
 import NotFound from './pages/NotFound';
 import PrivateRoute from './components/PrivateRoute';
+import BackToTop from './components/BackToTop';
 import { AuthProvider } from './contexts/AuthContext';
 // import './App.css';
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <Router basename="/rescepidea">
         <div className="app">
           <Navbar />
           <Routes>
@@ -36,6 +37,7 @@ function App() {
             } />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <BackToTop />
         </div>
       </Router>
     </AuthProvider>

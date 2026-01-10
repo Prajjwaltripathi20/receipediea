@@ -241,6 +241,7 @@
   width: 100%;
   height: 6px;
   -webkit-appearance: none;
+  appearance: none;
   background: var(--color-border);
   border-radius: var(--radius-full);
   outline: none;
@@ -325,8 +326,8 @@
 /* Recipes Grid */
 .recipes-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
 }
 
 /* Loading */

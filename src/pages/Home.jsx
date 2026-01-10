@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FaSearch, FaFire, FaLeaf, FaSeedling, FaBreadSlice } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 import RecipeCard from '../components/RecipeCard';
+import SkeletonCard from '../components/SkeletonCard';
 import Footer from '../components/Footer';
+import recipeService from '../services/RecipeService';
 import '../styles/Home.css';
 
 const Home = () => {
@@ -12,13 +15,14 @@ const Home = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const trendRef = useRef(null);
 
   // Mock data for featured recipes
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
         // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 800));
 
         const mockFeaturedRecipes = [
           {
@@ -108,42 +112,32 @@ const Home = () => {
     fetchRecipes();
   }, []);
 
-  // Function to fetch search suggestions
   const fetchSuggestions = async (query) => {
-    if (query.length < 2) {
-      setSuggestions([]);
-      return;
-    }
-
     try {
-      const response = await fetch(
-        `https://api.spoonacular.com`
-      );
-      const data = await response.json();
-      setSuggestions(data);
+      const results = await recipeService.getAutocomplete(query);
+      const formatted = Array.isArray(results) ? results : [];
+      setSuggestions(formatted);
     } catch (error) {
-      console.error('Error fetching suggestions:', error);
-      // Fallback to mock suggestions if API fails
-      const mockSuggestions = [
-        { title: 'Pasta Carbonara' },
-        { title: 'Pasta Salad' },
-        { title: 'Pasta Primavera' },
-        { title: 'Pasta with Tomato Sauce' },
-        { title: 'Pasta with Pesto' }
-      ];
-      setSuggestions(mockSuggestions);
+      console.warn(error);
+      setSuggestions([]);
     }
   };
-  const trendRef = useRef(null);
+
   const scrollToTrend = () => {
-    trendRef.current.scrollIntoView({ behavior: 'smooth' });
-  }
+    if (trendRef.current) {
+      trendRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-    fetchSuggestions(query);
-    setShowSuggestions(true);
+    if (query.length >= 2) {
+      fetchSuggestions(query);
+      setShowSuggestions(true);
+    } else {
+      setShowSuggestions(false);
+    }
   };
 
   const handleSuggestionClick = (suggestion) => {
@@ -153,11 +147,8 @@ const Home = () => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    // Navigate to search results page with the query
     window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
   };
-
-
 
   const testimonials = [
     {
@@ -196,6 +187,7 @@ const Home = () => {
               className="search-input"
               value={searchQuery}
               onChange={handleSearchChange}
+              onFocus={() => searchQuery.length >= 2 && setShowSuggestions(true)}
             />
             <button type="submit" className="search-button">
               <FaSearch /> Search
@@ -235,21 +227,15 @@ const Home = () => {
         <div className="container">
           <h2 className="section-title">Featured Recipes</h2>
           {loading ? (
-            <div className="loading-spinner">
-              <i className="fas fa-spinner fa-spin"></i>
+            <div className="recipe-grid">
+              {[1, 2, 3, 4].map(n => <SkeletonCard key={n} />)}
             </div>
           ) : (
-            <>
-              <div className="recipe-grid">
-                {featuredRecipes.map(recipe => (
-                  <RecipeCard key={recipe.id} recipe={recipe} />
-                ))}
-              </div>
-              {/* <div className="no-more-recipes">
-                <img src="https://undraw.co/api/illustrations/undraw_breakfast_psiw.svg" alt="No more recipes" />
-                <span>No more recipes to show!</span>
-              </div> */}
-            </>
+            <div className="recipe-grid">
+              {featuredRecipes.map(recipe => (
+                <RecipeCard key={recipe.id} recipe={recipe} />
+              ))}
+            </div>
           )}
         </div>
       </section>
@@ -257,11 +243,17 @@ const Home = () => {
       <section className="trending-now" ref={trendRef}>
         <div className="container">
           <h2 className="section-title">Trending Now</h2>
-          <div className="trending-grid">
-            {trendingRecipes.map(recipe => (
-              <RecipeCard key={recipe.id} recipe={recipe} />
-            ))}
-          </div>
+          {loading ? (
+            <div className="recipe-grid">
+              {[1, 2, 3, 4].map(n => <SkeletonCard key={n} />)}
+            </div>
+          ) : (
+            <div className="trending-grid">
+              {trendingRecipes.map(recipe => (
+                <RecipeCard key={recipe.id} recipe={recipe} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -327,4 +319,4 @@ const Home = () => {
   );
 };
 
-export default Home; 
+export default Home;
