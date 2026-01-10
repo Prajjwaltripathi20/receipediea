@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/receipediea/static/css/main.f596dc80.css",
+    "main.js": "/receipediea/static/js/main.68d97d1d.js",
+    "index.html": "/receipediea/index.html",
+    "main.f596dc80.css.map": "/receipediea/static/css/main.f596dc80.css.map",
+    "main.68d97d1d.js.map": "/receipediea/static/js/main.68d97d1d.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f596dc80.css",
+    "static/js/main.68d97d1d.js"
+  ]
+}
